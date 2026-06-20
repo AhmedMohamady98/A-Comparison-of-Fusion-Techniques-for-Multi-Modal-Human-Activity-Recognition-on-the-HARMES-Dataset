@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software or its results, please cite the following work."
+title: "A Comparison of Fusion Techniques for Multi-Modal Human Activity Recognition on the HARMES Dataset"
+authors:
+  - family-names: Mohamady
+    given-names: Ahmed
+  - family-names: Burchard
+    given-names: Robin
+year: 2026
+notes: "Preprint, arXiv version forthcoming. This file will be updated with the arXiv identifier once it is posted."
