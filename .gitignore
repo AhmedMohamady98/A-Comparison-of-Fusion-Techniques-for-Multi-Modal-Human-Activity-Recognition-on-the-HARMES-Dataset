@@ -7,8 +7,8 @@ __pycache__/
 venv/
 env/
 
-# Data (download from Zenodo — see README)
-data/
+# Data (download from Zenodo — see README); root-level only, not src/data/
+/data/
 *.pkl
 
 # Model checkpoints (too large for git; regenerate via jobs/train_*.py)
