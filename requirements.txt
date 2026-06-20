@@ -1,0 +1,8 @@
+torch
+torchaudio          # AST audio preprocessing (44.1 kHz -> 16 kHz resampling)
+transformers        # AST backbone via HuggingFace
+numpy
+pandas
+scikit-learn
+matplotlib
+seaborn
