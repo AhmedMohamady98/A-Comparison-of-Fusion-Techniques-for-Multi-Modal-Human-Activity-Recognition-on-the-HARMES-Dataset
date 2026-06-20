@@ -115,13 +115,16 @@ DOI: [10.5281/zenodo.19425719](https://zenodo.org/records/19425719). License: CC
 
 ## Citation
 
+A preprint will be made available on arXiv; this entry will be updated with the
+arXiv identifier once it is posted.
+
 ```bibtex
-@inproceedings{mohamady_fusion_harmes,
-  title     = {A Comparison of Fusion Techniques for Multi-Modal Human
-               Activity Recognition on the HARMES Dataset},
-  author    = {Mohamady, Ahmed and Burchard, Robin},
-  booktitle = {iWOAR},
-  year      = {2026}
+@misc{mohamady_fusion_harmes,
+  title  = {A Comparison of Fusion Techniques for Multi-Modal Human
+            Activity Recognition on the HARMES Dataset},
+  author = {Mohamady, Ahmed and Burchard, Robin},
+  year   = {2026},
+  note   = {Preprint, arXiv version forthcoming}
 }
 ```
 
