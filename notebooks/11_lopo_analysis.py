@@ -131,25 +131,26 @@ pooled = np.sum(np.stack([np.array(r["confusion_matrix"]) for r in per_p]), axis
 row_sum = pooled.sum(axis=1, keepdims=True); row_sum[row_sum == 0] = 1
 cm_pooled = pooled / row_sum
 
-fig, ax = plt.subplots(figsize=(9.5, 8.5))
+fig, ax = plt.subplots(figsize=(10.5, 9.0))
 confusion_heatmap(ax, cm_pooled,
                   title=f"GMF LOPO — pooled confusion matrix (all 20 participants)  —  mean macro F1 = {mean_f1:.3f}",
                   annot_size=8)
-# Strengthen all text so the matrix is legible at print size.
+# Strengthen all text so the matrix is legible and sharp at print size.
 for txt in ax.texts:                       # cell numbers
-    txt.set_fontweight("bold")
-ax.set_xticklabels(ax.get_xticklabels(), fontsize=8, fontweight="black")
-ax.set_yticklabels(ax.get_yticklabels(), fontsize=9, fontweight="bold")
-ax.set_xlabel("Predicted", fontsize=12, fontweight="bold")
-ax.set_ylabel("True",      fontsize=12, fontweight="bold")
-# Center the title over the matrix itself. The axes is pushed right by the long
-# y-tick labels, so we lay it out first, then place a small bold title centered
-# on the axes' true horizontal midpoint.
+    txt.set_fontweight("black")
+ax.set_xticklabels(ax.get_xticklabels(), fontsize=8.5, fontweight="black")
+ax.set_yticklabels(ax.get_yticklabels(), fontsize=9.5, fontweight="black")
+ax.set_xlabel("Predicted", fontsize=13, fontweight="black")
+ax.set_ylabel("True",      fontsize=13, fontweight="black")
+# Center the GRID itself in the figure. The long y-tick labels otherwise eat the
+# left margin and push the grid right, so we lay out, then recenter the axes box
+# on the figure midline and put the title at that same x = 0.5. Reserve headroom
+# (rect top=0.93) so the title has clear space above the grid.
 _title = ax.get_title(); ax.set_title("")
-plt.tight_layout()
+plt.tight_layout(rect=[0, 0, 1, 0.93])
 _pos = ax.get_position()
-fig.suptitle(_title, x=_pos.x0 + _pos.width / 2, y=0.99,
-             fontsize=10, fontweight="bold", ha="center")
+ax.set_position([0.5 - _pos.width / 2, _pos.y0, _pos.width, _pos.height])
+fig.suptitle(_title, x=0.5, y=0.975, fontsize=12, fontweight="black", ha="center")
 save_fig(fig, OUT / "confusion_matrix_pooled")
 
 # %% [markdown]

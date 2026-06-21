@@ -128,11 +128,17 @@ for i, m in enumerate(methods):
     ax.bar(x + (i - (n - 1) / 2) * bar_w, mean_pc[m], bar_w,
            color=FUSION_COLORS[m], edgecolor="white", linewidth=0.3, label=m)
 ax.set_xticks(x)
-ax.set_xticklabels(PAPER_LABELS, rotation=45, ha="right", fontsize=8)
-ax.set_ylabel("Mean F1 (3-fold)")
-ax.set_title("Per-class F1 — all fusion methods")
+ax.set_xticklabels(PAPER_LABELS, rotation=45, ha="right", fontsize=9, fontweight="black")
+for lbl in ax.get_yticklabels():
+    lbl.set_fontweight("black")
+ax.set_ylabel("Mean F1 (3-fold)", fontsize=12, fontweight="black")
+ax.set_title("Per-class F1 — all fusion methods", fontsize=13, fontweight="black")
 ax.set_ylim(0, 1.0)
-legend_outside_right(ax, title="Method")
+leg = legend_outside_right(ax, title="Method")
+if leg is not None:
+    leg.set_title("Method", prop={"weight": "black"})
+    for txt in leg.get_texts():
+        txt.set_fontweight("black")
 save_fig(fig, OUT / "per_class_all_methods")
 
 # %% [markdown]
