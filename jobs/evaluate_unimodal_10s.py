@@ -192,7 +192,7 @@ def evaluate_model(name, splits, device):
     cm_sum       = np.zeros((NUM_CLASSES, NUM_CLASSES), dtype=int)
 
     for fold_idx, fold in enumerate(splits):
-        ckpt = os.path.join(MODELS_DIR, f"{tag}_{modality}_fold{fold_idx}.pt")
+        ckpt = os.path.join(MODELS_DIR, f"{tag}_fold{fold_idx}.pt")
         if not os.path.exists(ckpt):
             print(f"  ⚠️  Missing: {ckpt} — skipping fold {fold_idx}")
             continue

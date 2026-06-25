@@ -372,7 +372,7 @@ def fig_per_fold(fold_results, out_dir):
                         for i in folds], fontsize=10)
     ax.set_ylabel("Score"); ax.set_ylim(0, 1.1)
     ax.set_title("GMF (10s) — Per-Fold Results\n"
-                 "TinyHAR + AST + TSMixer → Gated Sum → 15 classes",
+                 "TinyHAR + AST + TSMixer → Gated Sum → 16 classes",
                  fontweight="bold")
     ax.legend(fontsize=9); ax.grid(axis="y", alpha=0.3)
     sns.despine(ax=ax)

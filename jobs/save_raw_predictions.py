@@ -25,6 +25,7 @@ Usage:
 import os
 import sys
 import csv
+import gzip
 import numpy as np
 import torch
 import torch.nn as nn
@@ -245,8 +246,8 @@ def main():
         "late_fusion", "gmf", "mbt", "cma", "lmf", "decision_fusion", "cls_transformer",
     ]
 
-    master_path = os.path.join(OUT_DIR, "all_models_raw_predictions.csv")
-    master_fh   = open(master_path, "w", newline="")
+    master_path = os.path.join(OUT_DIR, "all_models_raw_predictions.csv.gz")
+    master_fh   = gzip.open(master_path, "wt", newline="")   # gzip-compressed CSV
     master_w    = csv.writer(master_fh)
     master_w.writerow(HEADER)
 

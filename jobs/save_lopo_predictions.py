@@ -38,7 +38,7 @@ from src.fusion.gmf import GatedMultimodalFusion
 DATA_DIR = os.environ.get("HARMES_DATA", "data/harmes")
 CHECKPOINT_DIR = "results/lopo/models"
 OUT_DIR        = "results/lopo"
-OUT_CSV        = os.path.join(OUT_DIR, "lopo_raw_predictions.csv")
+OUT_CSV        = os.path.join(OUT_DIR, "lopo_raw_predictions.csv.gz")
 
 WINDOW_SIZE = 500   # 10s @ 50 Hz
 STEP        = 500   # no overlap

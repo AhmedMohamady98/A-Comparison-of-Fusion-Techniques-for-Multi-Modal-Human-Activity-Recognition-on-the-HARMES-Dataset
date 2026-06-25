@@ -19,7 +19,7 @@ echo "Node:    $SLURMD_NODENAME"
 echo "GPU:     $(nvidia-smi --query-gpu=name --format=csv,noheader)"
 echo "Started: $(date)"
 echo "Window:  10s (500 samples at 50 Hz, 50% overlap)"
-echo "Method:  Late Fusion — concat 384-dim → MLP → 15 classes"
+echo "Method:  Late Fusion — concat 384-dim → MLP → 16 classes"
 echo "Init:    Warm-started from results/models/tinyhar/tsmixer/ast_fold*.pt"
 echo ""
 

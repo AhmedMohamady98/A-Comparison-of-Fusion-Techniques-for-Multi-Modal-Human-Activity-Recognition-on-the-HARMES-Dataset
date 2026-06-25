@@ -5,8 +5,7 @@ Loads mbt_fold{0,1,2}_best.pt, runs inference, generates comprehensive
 high-quality figures (300 DPI, seaborn ticks, value labels on every bar) and
 tables. Figures compare MBT against unimodal baselines, Late Fusion, and GMF.
 
-Note: MBT fold 0/1 logs may be in ~/logs/ (pre-fix runs 11592253/11592254)
-      while fold 2 logs are in ~/multimodal-har-fusion-harmes/logs/.
+Training logs (if present) are read from logs/ to plot training curves.
 
 Output structure:
     results/mbt/figures/
@@ -196,11 +195,9 @@ def evaluate_all_folds(splits, device):
 # ── Log parsing ───────────────────────────────────────────────────────────────
 
 def parse_fold_log(fold_idx):
-    """Try both log directories — MBT fold 0/1 ran before the absolute-path fix."""
-    # Prefer multimodal-har-fusion-harmes/logs/ first, then fall back to ~/logs/
+    """Read the SLURM training log for a fold (if present) from logs/."""
     patterns = [
-        f"logs/mbt_10s_fold{fold_idx}_*.out",           # project-relative (absolute-path jobs)
-        os.path.expanduser(f"~/logs/mbt_10s_fold{fold_idx}_*.out"),  # home-dir fallback
+        f"logs/mbt_10s_fold{fold_idx}_*.out",
     ]
     log_path = None
     for pat in patterns:
