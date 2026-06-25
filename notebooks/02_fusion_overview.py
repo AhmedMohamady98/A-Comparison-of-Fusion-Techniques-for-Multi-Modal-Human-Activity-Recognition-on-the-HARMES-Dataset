@@ -244,7 +244,7 @@ fig.subplots_adjust(bottom=0.24, top=0.94, right=0.99)
 save_fig(fig, OUT / "confusion_matrix_diff_gmf_vs_tinyhar")
 
 # %% [markdown]
-# ## 7 · Summary table (CSV — for thesis)
+# ## 7 · Summary table (CSV)
 
 # %%
 import csv

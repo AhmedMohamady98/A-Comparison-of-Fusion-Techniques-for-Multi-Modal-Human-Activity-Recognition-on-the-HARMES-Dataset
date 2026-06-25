@@ -12,7 +12,7 @@ Architecture:
     Loss: NLLLoss(log(p_fused), labels)
 
 After training, inspect model.fusion.modality_weights to read the learned
-per-modality trust levels — a direct thesis result.
+per-modality trust levels — a direct, interpretable result.
 
 Initialization:
     TinyHAR, TSMixer, and the AST projection head are randomly initialised.

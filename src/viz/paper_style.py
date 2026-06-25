@@ -8,7 +8,7 @@ A hybrid look chosen after side-by-side review:
   - Modality colors pulled from HARMES paper Fig 5 architecture diagram.
   - Confusion matrices use `Blues` cmap (paper Fig 6 convention).
   - Helvetica/Arial font, no top/right spines, ticks on left/bottom only.
-  - All figures saved as SVG + PDF (vector, lossless) for thesis inclusion.
+  - All figures saved as SVG + PDF (vector, lossless) for publication.
 
 Usage:
 
@@ -58,8 +58,8 @@ FUSION_COLORS: dict[str, str] = {
 # Confusion-matrix colormaps.
 #   CM_CMAP      — for raw / normalized confusion matrices (every method, every fold).
 #                  Blues matches the HARMES paper Fig 6 convention.
-#   CM_DIFF_CMAP — for difference / delta confusion matrices (e.g. 3-mod − 2-mod
-#                  ablation). Divergent so red = worse, blue = better, white = no change.
+#   CM_DIFF_CMAP — for difference / delta confusion matrices (e.g. GMF − AST).
+#                  Divergent so red = higher, blue = lower, white = no change.
 CM_CMAP: str = "Blues"
 CM_DIFF_CMAP: str = "RdBu_r"
 

@@ -11,7 +11,7 @@ the model learns how much to trust each vote globally. This is principled when
 modalities have very different reliability levels, as the weights directly
 encode per-modality confidence.
 
-The learned weights are a direct thesis result:
+The learned weights are a direct, interpretable result:
     w = softmax(logit_weights)  →  e.g. [w_imu=0.25, w_audio=0.70, w_hum=0.05]
 This confirms which modality the fusion learned to rely on most.
 

@@ -4,7 +4,7 @@ Evaluate all 20 LOPO checkpoints and aggregate results.
 Loads lopo_pXX_best.pt for each participant, runs inference on that
 participant's windows (10s, no overlap), and saves:
   - results/lopo/lopo_results.json   — per-participant metrics
-  - results/lopo/lopo_summary.csv    — summary table for thesis
+  - results/lopo/lopo_summary.csv    — summary table
 
 Usage:
     PYTHONPATH=. python jobs/evaluate_gmf_lopo.py
