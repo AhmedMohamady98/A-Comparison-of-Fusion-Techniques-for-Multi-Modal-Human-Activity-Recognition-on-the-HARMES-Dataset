@@ -16,7 +16,7 @@ For each model × fold × participant, saves:
 Outputs:
   results/predictions/
   ├── {model}_fold{i}_raw_preds.csv   ← one file per model × fold
-  └── all_models_raw_predictions.csv  ← master combined file
+  └── all_models_raw_predictions.csv.gz  ← master combined file (gzipped)
 
 Usage:
   PYTHONPATH=. python jobs/save_raw_predictions.py
@@ -50,7 +50,7 @@ NUM_WORKERS = 2
 sys.path.insert(0, ROOT)
 
 from src.data.dataset import HARMESDataset, NUM_CLASSES, ID_TO_ACTIVITY
-from src.data.splits import get_3fold_splits
+from src.data.splits import get_3fold_splits_with_val
 from src.encoders.tinyhar.model import TinyHAREncoder
 from src.encoders.tsmixer.model import TSMixerEncoder
 from src.encoders.ast.model import ASTEncoder
@@ -151,13 +151,13 @@ def build_model(key: str) -> nn.Module:
 
 def ckpt_path(key: str, fold: int) -> str:
     """Return path to best checkpoint.
-    Unimodal uses unimodal_models/ with modality suffix (e.g. tinyhar_imu_fold0.pt).
+    Unimodal uses unimodal_models/ (e.g. tinyhar_fold0.pt), matching the names
+    written by the unimodal training scripts.
     Fusion uses models/ with _best suffix (e.g. gmf_fold0_best.pt).
     """
-    _UNIMODAL_SUFFIX = {"tinyhar": "imu", "ast": "audio", "tsmixer": "humidity"}
-    if key in _UNIMODAL_SUFFIX:
-        suffix = _UNIMODAL_SUFFIX[key]
-        p = os.path.join(UNIMODAL_MODELS_DIR, f"{key}_{suffix}_fold{fold}.pt")
+    _UNIMODAL = {"tinyhar", "ast", "tsmixer"}
+    if key in _UNIMODAL:
+        p = os.path.join(UNIMODAL_MODELS_DIR, f"{key}_fold{fold}.pt")
     else:
         p = os.path.join(MODELS_DIR, f"{key}_fold{fold}_best.pt")
     return p
@@ -174,7 +174,7 @@ def run_participant(model, participant_id, device):
     Run inference on a single participant. Returns:
       true_labels : (N,) int
       pred_labels : (N,) int
-      probs       : (N, 15) float32
+      probs       : (N, 16) float32
     """
     ds = HARMESDataset([participant_id], DATA_DIR, window_size=WINDOW_SIZE, step=STEP)
     if len(ds) == 0:
@@ -239,7 +239,7 @@ def rows_for_participant(participant_id, fold, model_key, true_labels, pred_labe
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     device  = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    splits  = get_3fold_splits(list(range(1, 21)))
+    splits  = get_3fold_splits_with_val(list(range(1, 21)))
 
     ALL_MODELS = [
         "tinyhar", "ast", "tsmixer",
