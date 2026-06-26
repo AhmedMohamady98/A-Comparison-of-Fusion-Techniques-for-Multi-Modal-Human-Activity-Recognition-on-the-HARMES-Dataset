@@ -6,7 +6,7 @@ high-quality figures (300 DPI, seaborn ticks, value labels on every bar) and
 tables. Figures compare LMF against unimodal baselines, Late Fusion, GMF, MBT, and CMA.
 
 Output structure:
-    results/lmf/figures/
+    results/figures/lmf/
     ├── training_curves.png
     ├── per_fold_f1.png
     ├── per_class_f1.png
@@ -17,18 +17,17 @@ Output structure:
     ├── lmf_vs_late_fusion.png
     ├── lmf_vs_mbt.png
     ├── all_fusion_comparison.png
-    ├── progression_to_lmf.png
     ├── fold0/ {confusion_matrix, per_class_f1}.png
     ├── fold1/ ...
     └── fold2/ ...
 
-    results/lmf/tables/
+    results/tables/
     ├── lmf_summary.csv
     ├── lmf_per_fold.csv
     ├── lmf_per_class_f1.csv
     └── lmf_most_confused.csv
 
-    results/lmf/lmf_results.json
+    results/lmf_results.json
 
 Usage:
     PYTHONPATH=. python jobs/evaluate_lmf_10s.py

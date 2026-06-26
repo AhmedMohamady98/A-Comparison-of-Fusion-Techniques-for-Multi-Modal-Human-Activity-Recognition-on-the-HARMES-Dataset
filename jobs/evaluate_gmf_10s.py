@@ -6,7 +6,7 @@ high-quality figures (300 DPI, seaborn ticks, value labels on every bar) and
 tables. Figures compare GMF against unimodal baselines and Late Fusion.
 
 Output structure:
-    results/gmf/figures/
+    results/figures/gmf/
     ├── training_curves.png
     ├── per_fold_f1.png
     ├── per_class_f1.png
@@ -19,13 +19,13 @@ Output structure:
     ├── fold1/ ...
     └── fold2/ ...
 
-    results/gmf/tables/
+    results/tables/
     ├── gmf_summary.csv
     ├── gmf_per_fold.csv
     ├── gmf_per_class_f1.csv
     └── gmf_most_confused.csv
 
-    results/gmf/gmf_results.json
+    results/gmf_results.json
 
 Usage:
     PYTHONPATH=. python jobs/evaluate_gmf_10s.py

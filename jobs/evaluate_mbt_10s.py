@@ -8,7 +8,7 @@ tables. Figures compare MBT against unimodal baselines, Late Fusion, and GMF.
 Training logs (if present) are read from logs/ to plot training curves.
 
 Output structure:
-    results/mbt/figures/
+    results/figures/mbt/
     ├── training_curves.png
     ├── per_fold_f1.png
     ├── per_class_f1.png
@@ -18,18 +18,17 @@ Output structure:
     ├── lift_over_best_unimodal.png
     ├── mbt_vs_late_fusion.png
     ├── mbt_vs_gmf.png
-    ├── progression_to_mbt.png
     ├── fold0/ {confusion_matrix, per_class_f1}.png
     ├── fold1/ ...
     └── fold2/ ...
 
-    results/mbt/tables/
+    results/tables/
     ├── mbt_summary.csv
     ├── mbt_per_fold.csv
     ├── mbt_per_class_f1.csv
     └── mbt_most_confused.csv
 
-    results/mbt/mbt_results.json
+    results/mbt_results.json
 
 Usage:
     PYTHONPATH=. python jobs/evaluate_mbt_10s.py

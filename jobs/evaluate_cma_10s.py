@@ -6,7 +6,7 @@ high-quality figures (300 DPI, seaborn ticks, value labels on every bar) and
 tables. Figures compare CMA against unimodal baselines, Late Fusion, GMF, and MBT.
 
 Output structure:
-    results/cma/figures/
+    results/figures/cma/
     ├── training_curves.png
     ├── per_fold_f1.png
     ├── per_class_f1.png
@@ -16,18 +16,17 @@ Output structure:
     ├── lift_over_best_unimodal.png
     ├── cma_vs_late_fusion.png
     ├── cma_vs_mbt.png
-    ├── progression_to_cma.png
     ├── fold0/ {confusion_matrix, per_class_f1}.png
     ├── fold1/ ...
     └── fold2/ ...
 
-    results/cma/tables/
+    results/tables/
     ├── cma_summary.csv
     ├── cma_per_fold.csv
     ├── cma_per_class_f1.csv
     └── cma_most_confused.csv
 
-    results/cma/cma_results.json
+    results/cma_results.json
 
 Usage:
     PYTHONPATH=. python jobs/evaluate_cma_10s.py
