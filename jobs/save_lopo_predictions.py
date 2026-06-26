@@ -120,7 +120,7 @@ def main():
                              collate_fn=collate_fn, num_workers=NUM_WORKERS, pin_memory=True)
 
         model = GMFModel().to(device)
-        model.load_state_dict(torch.load(ckpt, map_location=device))
+        model.load_state_dict(torch.load(ckpt, map_location=device, weights_only=True))
 
         preds, labels, probs = run_inference_with_probs(model, loader, device)
 

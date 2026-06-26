@@ -198,7 +198,7 @@ def evaluate_model(name, splits, device):
             continue
 
         model, _ = make_model(name)
-        model.load_state_dict(torch.load(ckpt, map_location=device))
+        model.load_state_dict(torch.load(ckpt, map_location=device, weights_only=True))
         model = model.to(device)
 
         test_ds     = HARMESDataset(fold["test"], DATA_DIR,

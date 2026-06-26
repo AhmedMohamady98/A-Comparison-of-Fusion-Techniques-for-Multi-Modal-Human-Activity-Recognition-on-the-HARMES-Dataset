@@ -140,7 +140,7 @@ def evaluate_all_folds(splits, device):
             continue
 
         model = LateFusionModel().to(device)
-        state = torch.load(ckpt, map_location=device)
+        state = torch.load(ckpt, map_location=device, weights_only=True)
         model.load_state_dict(state)
 
         test_ds     = HARMESDataset(fold["test"], DATA_DIR,

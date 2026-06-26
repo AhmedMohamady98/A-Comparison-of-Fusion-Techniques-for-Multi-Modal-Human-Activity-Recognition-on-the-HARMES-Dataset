@@ -1,7 +1,8 @@
 """
 Fusion evaluation — all fusion methods, 10s windows.
 
-Evaluates Late Fusion, GMF, MBT, and CMA across 3 cross-validation folds.
+Evaluates all seven fusion methods — Late Fusion, GMF, MBT, CMA,
+CLS Transformer, LMF, and Decision Fusion — across 3 cross-validation folds.
 Loads best checkpoints, runs inference, generates per-method and cross-method
 figures, writes tables, and saves JSON results.
 
