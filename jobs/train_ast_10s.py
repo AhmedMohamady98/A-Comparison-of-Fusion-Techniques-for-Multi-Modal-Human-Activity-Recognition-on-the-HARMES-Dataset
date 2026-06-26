@@ -26,7 +26,7 @@ from src.training.trainer import train_model
 
 DATA_DIR = os.environ.get("HARMES_DATA", "data/harmes")
 RESULTS_DIR = "results/unimodal_models"
-BATCH_SIZE  = 32   # same as 2s/8s — AST spectrogram shape is always 1024 frames
+BATCH_SIZE  = 32   # AST spectrogram shape is always 1024 frames regardless of window size
 EMBED_DIM   = 128
 NUM_WORKERS = 4
 

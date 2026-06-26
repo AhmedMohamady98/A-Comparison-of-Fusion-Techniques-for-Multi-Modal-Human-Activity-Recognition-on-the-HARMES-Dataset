@@ -657,62 +657,6 @@ def fig_cma_vs_mbt(fold_results, mbt_data, out_dir):
     _save(fig, out_dir, "cma_vs_mbt.png")
 
 
-# ── Figure 10: Progression ────────────────────────────────────────────────────
-
-def fig_progression(fold_results, lf_data, gmf_data, mbt_data, out_dir):
-    unimodal_vals = {
-        "TinyHAR": [0.6447, 0.7363, 0.7491],
-        "AST":     [0.6715, 0.6935, 0.6999],
-        "TSMixer": [0.0805, 0.0940, 0.1149],
-    }
-    cma_mean = np.mean([r["macro_f1"] for r in fold_results])
-    lf_mean  = np.mean([r["macro_f1"] for r in lf_data])  if lf_data  else None
-    gmf_mean = np.mean([r["macro_f1"] for r in gmf_data]) if gmf_data else None
-    mbt_mean = np.mean([r["macro_f1"] for r in mbt_data]) if mbt_data else None
-
-    fig, ax = plt.subplots(figsize=(14, 6))
-    xlabels = ["2s", "8s", "10s", "10s\nLate Fusion", "10s\nGMF", "10s\nMBT", "10s\nCMA"]
-    xs_uni  = [0, 1, 2]
-
-    for name, vals in unimodal_vals.items():
-        ax.plot(xs_uni, vals, marker="o", linewidth=2,
-                color=UNIMODAL_COLORS[name], label=name)
-        ax.text(2.05, vals[-1], f" {vals[-1]:.3f}", fontsize=8,
-                color=UNIMODAL_COLORS[name], va="center")
-
-    prev_x, prev_y = 2, 0.7491
-    checkpoints = [
-        (lf_mean,  3, LF_COLOR,     "D", "Late Fusion"),
-        (gmf_mean, 4, GMF_COLOR,    "s", "GMF"),
-        (mbt_mean, 5, MBT_COLOR,    "^", "MBT"),
-    ]
-    for mean_val, xpos, color, marker, label in checkpoints:
-        if mean_val is not None:
-            ax.plot([prev_x, xpos], [prev_y, mean_val], linestyle="--",
-                    color=color, linewidth=1.2, alpha=0.5)
-            ax.scatter([xpos], [mean_val], color=color, s=150, zorder=5,
-                       marker=marker, label=f"{label} ({mean_val:.4f})")
-            ax.annotate(f"  {mean_val:.4f}", (xpos, mean_val), fontsize=9,
-                        color=color, va="center")
-            prev_x, prev_y = xpos, mean_val
-
-    ax.plot([prev_x, 6], [prev_y, cma_mean], linestyle="--",
-            color=FUSION_COLOR, linewidth=1.5, alpha=0.7)
-    ax.scatter([6], [cma_mean], color=FUSION_COLOR, s=220, zorder=5,
-               marker="*", label=f"CMA ({cma_mean:.4f})")
-    ax.annotate(f"  {cma_mean:.4f}", (6, cma_mean), fontsize=11,
-                fontweight="bold", color=FUSION_COLOR, va="center")
-
-    ax.set_xticks(range(len(xlabels))); ax.set_xticklabels(xlabels, fontsize=10)
-    ax.set_ylabel("Macro F1 Score"); ax.set_ylim(0, 1)
-    ax.set_title("Macro F1 Progression: Window Size → All Fusion Methods\n"
-                 "(HARMES, 3-Fold Group CV)", fontweight="bold")
-    ax.legend(fontsize=9, loc="upper left"); ax.grid(True, alpha=0.3)
-    sns.despine(ax=ax)
-    plt.tight_layout()
-    _save(fig, out_dir, "progression_to_cma.png")
-
-
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -804,9 +748,6 @@ def main():
 
     print("\nCMA vs MBT comparison:")
     fig_cma_vs_mbt(fold_results, mbt_data, FIGURES_DIR)
-
-    print("\nProgression figure:")
-    fig_progression(fold_results, lf_data, gmf_data, mbt_data, FIGURES_DIR)
 
     print("\nPer-fold figures:")
     for r in fold_results:

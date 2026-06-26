@@ -571,43 +571,6 @@ def fig_lift_over_unimodal(fold_results, unimodal_data, out_dir):
     _save(fig, out_dir, "lift_over_best_unimodal.png")
 
 
-# ── Figure 8: Window-size progression (2s → 8s → 10s → Fusion) ───────────────
-
-def fig_progression(fold_results, out_dir):
-    data = {
-        "TinyHAR": [0.6447, 0.7363, 0.7491],
-        "AST":     [0.6715, 0.6935, 0.6999],
-        "TSMixer": [0.0805, 0.0940, 0.1149],
-    }
-    lf_mean = np.mean([r["macro_f1"] for r in fold_results])
-
-    fig, ax = plt.subplots(figsize=(10, 6))
-    xs      = [0, 1, 2, 3]
-    xlabels = ["2s", "8s", "10s", "10s\nLate Fusion"]
-
-    for name, vals in data.items():
-        ax.plot([0, 1, 2], vals, marker="o", linewidth=2,
-                color=UNIMODAL_COLORS[name], label=name)
-        ax.text(2.05, vals[-1], f" {vals[-1]:.3f}", fontsize=8,
-                color=UNIMODAL_COLORS[name], va="center")
-
-    ax.scatter([3], [lf_mean], color=FUSION_COLOR, s=180, zorder=5,
-               marker="*", label=f"Late Fusion ({lf_mean:.4f})")
-    ax.annotate(f"  {lf_mean:.4f}", (3, lf_mean), fontsize=10,
-                fontweight="bold", color=FUSION_COLOR, va="center")
-    ax.plot([2, 3], [0.7491, lf_mean], linestyle="--",
-            color=FUSION_COLOR, linewidth=1.5, alpha=0.6)
-
-    ax.set_xticks(xs); ax.set_xticklabels(xlabels, fontsize=11)
-    ax.set_ylabel("Macro F1 Score"); ax.set_ylim(0, 1)
-    ax.set_title("Macro F1 Progression: Window Size → Fusion (HARMES, 3-Fold CV)",
-                 fontweight="bold")
-    ax.legend(fontsize=9); ax.grid(True, alpha=0.3)
-    sns.despine(ax=ax)
-    plt.tight_layout()
-    _save(fig, out_dir, "progression_to_fusion.png")
-
-
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -687,9 +650,6 @@ def main():
 
         print("\nLift over best unimodal:")
         fig_lift_over_unimodal(fold_results, unimodal_data, FIGURES_DIR)
-
-    print("\nProgression figure:")
-    fig_progression(fold_results, FIGURES_DIR)
 
     print("\nPer-fold figures:")
     for r in fold_results:

@@ -1,12 +1,10 @@
 """
-Unimodal 10s evaluation (corrected audio SR).
+Unimodal 10s evaluation.
 
-This is the authoritative evaluation script for all unimodal 10s results.
-It supersedes evaluate_unimodal_10s.py, which was run before the AST audio
-sampling-rate bug was fixed (44.1 kHz passed as 16 kHz, truncating 10s clips
-to ~3.7s of effective audio).
-
-AST improvement after fix: 0.6999 → 0.8012 (+0.101 macro F1).
+Evaluates the three unimodal baselines — TinyHAR (IMU), AST (audio),
+TSMixer (humidity) — with 10s windows under 3-fold, participant-grouped
+cross-validation. Loads best checkpoints, runs inference, and writes
+per-model figures, tables, and JSON results.
 
 Output structure:
     results/figures/
@@ -828,7 +826,7 @@ def main():
 
     # ── 6. Summary ────────────────────────────────────────────────────────────
     print("\n" + "=" * 60)
-    print("10s UNIMODAL RESULTS SUMMARY — corrected AST audio SR")
+    print("10s UNIMODAL RESULTS SUMMARY")
     print("(20 participants, 3-fold group CV)")
     print("=" * 60)
     print(f"{'Model':<12} {'Macro F1':>10} {'± std':>8} {'Accuracy':>10}")

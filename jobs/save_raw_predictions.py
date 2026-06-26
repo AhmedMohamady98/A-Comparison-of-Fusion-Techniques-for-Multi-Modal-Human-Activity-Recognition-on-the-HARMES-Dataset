@@ -162,9 +162,6 @@ def ckpt_path(key: str, fold: int) -> str:
         p = os.path.join(MODELS_DIR, f"{key}_fold{fold}_best.pt")
     return p
 
-# Methods that return log-probabilities instead of raw logits
-LOG_PROB_MODELS = {"decision_fusion"}
-
 # ---------------------------------------------------------------------------
 # Inference — per participant
 # ---------------------------------------------------------------------------

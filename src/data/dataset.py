@@ -50,7 +50,7 @@ ACTIVITY_TO_ID = {
     "Cleaning table":       12,
     "Disinfecting hands":   13,
     "Cleaning dishwasher":  14,
-    "Null":                 15,    # ← NEW: "no activity" / transitions between activities
+    "Null":                 15,    # "no activity" / transitions between activities
 }
 
 ID_TO_ACTIVITY = {v: k for k, v in ACTIVITY_TO_ID.items()}

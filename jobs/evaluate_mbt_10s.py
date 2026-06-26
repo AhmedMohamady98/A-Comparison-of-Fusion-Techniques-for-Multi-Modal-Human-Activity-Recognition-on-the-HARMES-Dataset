@@ -666,64 +666,6 @@ def fig_mbt_vs_gmf(fold_results, gmf_data, out_dir):
     _save(fig, out_dir, "mbt_vs_gmf.png")
 
 
-# ── Figure 10: Progression (unimodal → LF → GMF → MBT) ──────────────────────
-
-def fig_progression(fold_results, lf_data, gmf_data, out_dir):
-    unimodal_vals = {
-        "TinyHAR": [0.6447, 0.7363, 0.7491],
-        "AST":     [0.6715, 0.6935, 0.6999],
-        "TSMixer": [0.0805, 0.0940, 0.1149],
-    }
-    mbt_mean = np.mean([r["macro_f1"] for r in fold_results])
-    lf_mean  = np.mean([r["macro_f1"] for r in lf_data])  if lf_data  else None
-    gmf_mean = np.mean([r["macro_f1"] for r in gmf_data]) if gmf_data else None
-
-    fig, ax = plt.subplots(figsize=(13, 6))
-    xlabels = ["2s", "8s", "10s", "10s\nLate Fusion", "10s\nGMF", "10s\nMBT"]
-    xs_uni  = [0, 1, 2]
-
-    for name, vals in unimodal_vals.items():
-        ax.plot(xs_uni, vals, marker="o", linewidth=2,
-                color=UNIMODAL_COLORS[name], label=name)
-        ax.text(2.05, vals[-1], f" {vals[-1]:.3f}", fontsize=8,
-                color=UNIMODAL_COLORS[name], va="center")
-
-    prev_x, prev_y = 2, 0.7491
-    if lf_mean is not None:
-        ax.plot([prev_x, 3], [prev_y, lf_mean], linestyle="--",
-                color=LF_COLOR, linewidth=1.2, alpha=0.5)
-        ax.scatter([3], [lf_mean], color=LF_COLOR, s=150, zorder=5,
-                   marker="D", label=f"Late Fusion ({lf_mean:.4f})")
-        ax.annotate(f"  {lf_mean:.4f}", (3, lf_mean), fontsize=9,
-                    color=LF_COLOR, va="center")
-        prev_x, prev_y = 3, lf_mean
-
-    if gmf_mean is not None:
-        ax.plot([prev_x, 4], [prev_y, gmf_mean], linestyle="--",
-                color=GMF_COLOR, linewidth=1.2, alpha=0.5)
-        ax.scatter([4], [gmf_mean], color=GMF_COLOR, s=150, zorder=5,
-                   marker="s", label=f"GMF ({gmf_mean:.4f})")
-        ax.annotate(f"  {gmf_mean:.4f}", (4, gmf_mean), fontsize=9,
-                    color=GMF_COLOR, va="center")
-        prev_x, prev_y = 4, gmf_mean
-
-    ax.plot([prev_x, 5], [prev_y, mbt_mean], linestyle="--",
-            color=FUSION_COLOR, linewidth=1.5, alpha=0.7)
-    ax.scatter([5], [mbt_mean], color=FUSION_COLOR, s=220, zorder=5,
-               marker="*", label=f"MBT ({mbt_mean:.4f})")
-    ax.annotate(f"  {mbt_mean:.4f}", (5, mbt_mean), fontsize=11,
-                fontweight="bold", color=FUSION_COLOR, va="center")
-
-    ax.set_xticks(range(len(xlabels))); ax.set_xticklabels(xlabels, fontsize=11)
-    ax.set_ylabel("Macro F1 Score"); ax.set_ylim(0, 1)
-    ax.set_title("Macro F1 Progression: Window Size → Fusion Methods\n"
-                 "(HARMES, 3-Fold Group CV)", fontweight="bold")
-    ax.legend(fontsize=9); ax.grid(True, alpha=0.3)
-    sns.despine(ax=ax)
-    plt.tight_layout()
-    _save(fig, out_dir, "progression_to_mbt.png")
-
-
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -810,9 +752,6 @@ def main():
 
     print("\nMBT vs GMF comparison:")
     fig_mbt_vs_gmf(fold_results, gmf_data, FIGURES_DIR)
-
-    print("\nProgression figure:")
-    fig_progression(fold_results, lf_data, gmf_data, FIGURES_DIR)
 
     print("\nPer-fold figures:")
     for r in fold_results:

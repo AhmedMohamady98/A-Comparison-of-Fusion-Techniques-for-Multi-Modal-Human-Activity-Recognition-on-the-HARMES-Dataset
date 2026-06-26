@@ -65,8 +65,8 @@ class ASTEncoder(nn.Module):
             self.ast.eval()
 
         # Dataset audio is 44.1 kHz; resample to 16 kHz before feature extraction.
-        # Without this the mel spectrogram frames are computed at wrong hop size and
-        # 8s/10s windows get truncated to only ~3.7 s of actual audio.
+        # Without this the mel spectrogram frames are computed at the wrong hop size
+        # and a 10s window covers only ~3.7 s of actual audio.
         waveforms = [
             F_audio.resample(x[i].cpu().float(), orig_freq=DATASET_SR, new_freq=SAMPLING_RATE).numpy()
             for i in range(x.shape[0])

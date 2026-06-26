@@ -608,52 +608,6 @@ def fig_gmf_vs_late_fusion(fold_results, lf_data, out_dir):
     _save(fig, out_dir, "gmf_vs_late_fusion.png")
 
 
-# ── Figure 9: Progression (unimodal → Late Fusion → GMF) ─────────────────────
-
-def fig_progression(fold_results, lf_data, out_dir):
-    data = {
-        "TinyHAR": [0.6447, 0.7363, 0.7491],
-        "AST":     [0.6715, 0.6935, 0.6999],
-        "TSMixer": [0.0805, 0.0940, 0.1149],
-    }
-    gmf_mean = np.mean([r["macro_f1"] for r in fold_results])
-    lf_mean  = np.mean([r["macro_f1"] for r in lf_data]) if lf_data else None
-
-    fig, ax = plt.subplots(figsize=(11, 6))
-    xs      = [0, 1, 2, 3, 4]
-    xlabels = ["2s", "8s", "10s", "10s\nLate Fusion", "10s\nGMF"]
-
-    for name, vals in data.items():
-        ax.plot([0, 1, 2], vals, marker="o", linewidth=2,
-                color=UNIMODAL_COLORS[name], label=name)
-        ax.text(2.05, vals[-1], f" {vals[-1]:.3f}", fontsize=8,
-                color=UNIMODAL_COLORS[name], va="center")
-
-    if lf_mean is not None:
-        ax.scatter([3], [lf_mean], color=LF_COLOR, s=150, zorder=5,
-                   marker="D", label=f"Late Fusion ({lf_mean:.4f})")
-        ax.annotate(f"  {lf_mean:.4f}", (3, lf_mean), fontsize=9,
-                    color=LF_COLOR, va="center")
-        ax.plot([2, 3], [0.7491, lf_mean], linestyle="--",
-                color=LF_COLOR, linewidth=1.2, alpha=0.5)
-        ax.plot([3, 4], [lf_mean, gmf_mean], linestyle="--",
-                color=FUSION_COLOR, linewidth=1.5, alpha=0.6)
-
-    ax.scatter([4], [gmf_mean], color=FUSION_COLOR, s=180, zorder=5,
-               marker="*", label=f"GMF ({gmf_mean:.4f})")
-    ax.annotate(f"  {gmf_mean:.4f}", (4, gmf_mean), fontsize=10,
-                fontweight="bold", color=FUSION_COLOR, va="center")
-
-    ax.set_xticks(xs); ax.set_xticklabels(xlabels, fontsize=11)
-    ax.set_ylabel("Macro F1 Score"); ax.set_ylim(0, 1)
-    ax.set_title("Macro F1 Progression: Window Size → Late Fusion → GMF\n"
-                 "(HARMES, 3-Fold Group CV)", fontweight="bold")
-    ax.legend(fontsize=9); ax.grid(True, alpha=0.3)
-    sns.despine(ax=ax)
-    plt.tight_layout()
-    _save(fig, out_dir, "progression_to_gmf.png")
-
-
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
@@ -734,9 +688,6 @@ def main():
 
     print("\nGMF vs Late Fusion comparison:")
     fig_gmf_vs_late_fusion(fold_results, lf_data, FIGURES_DIR)
-
-    print("\nProgression figure:")
-    fig_progression(fold_results, lf_data, FIGURES_DIR)
 
     print("\nPer-fold figures:")
     for r in fold_results:

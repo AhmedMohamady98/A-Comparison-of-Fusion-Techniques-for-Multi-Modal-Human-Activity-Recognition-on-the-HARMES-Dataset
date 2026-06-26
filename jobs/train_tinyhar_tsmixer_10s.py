@@ -5,7 +5,6 @@ Train TinyHAR (IMU) + TSMixer (Humidity) at 10-second windows.
 AudioSet clips are 10s → AST spectrogram fills 100% at this window size.
 
 Results saved to: results/unimodal_models/
-Compare with:     results/8s/models/  and  results/models/
 """
 
 import os
