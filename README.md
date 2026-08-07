@@ -28,13 +28,15 @@ GMF under leave-one-participant-out (LOPO): **0.819** macro F1.
 
 ### Statistical separability
 
-Because each participant is held out in exactly one fold, every model yields one
-macro F1 per participant on an identical window set, giving 20 paired
-observations per comparison. Testing those pairs
-(`notebooks/20_significance_tests.py`) shows the methods fall into three tiers
-rather than a strict order. All 16 cross-tier comparisons are significant after
-Holm correction (largest adjusted *p* = 0.0013) and none of the 5 within-tier
-comparisons are (smallest adjusted *p* = 0.413).
+Supplementary analysis that extends the paper rather than restating it. Because
+each participant is held out in exactly one fold, every model yields one macro F1
+per participant on an identical window set, giving 20 paired observations per
+comparison. `notebooks/20_significance_tests.py` reproduces everything below.
+
+Testing all 21 method pairs (Wilcoxon signed-rank, Holm-corrected) groups the
+methods into three tiers rather than a strict order. All 16 cross-tier
+comparisons are significant (largest adjusted *p* = 0.0013); none of the 5
+within-tier comparisons are (smallest adjusted *p* = 0.413).
 
 | Tier | Methods |
 |---|---|
@@ -42,26 +44,13 @@ comparisons are (smallest adjusted *p* = 0.413).
 | 2 | CMA, CLS Transformer, MBT |
 | 3 | LMF, Decision Fusion |
 
-GMF's 0.011 lead over Late Fusion is **not** statistically significant (paired
-*t*(19) = 2.074, *p* = 0.052; Wilcoxon *W* = 58, *p* = 0.083; 95% CI
-[−0.000, +0.022]).
-
-That should not be read as evidence the two methods are equal. A sensitivity
-analysis shows the smallest difference this design can detect at 80% power is
-0.016 macro F1, which is larger than the 0.011 gap actually observed, and that
-conclusion holds across the 95% confidence interval of the difference standard
-deviation. Equivalence testing (TOST) puts the same point the other way: the two
-are equivalent within ±0.03 macro F1 (*p* = 0.001) but equivalence cannot be
-claimed within ±0.01 (*p* = 0.586). The difference between GMF and late
-concatenation therefore falls **below the resolution of a 20-participant
-design**; separating them would need roughly 39 participants if the true
-difference is the size measured here.
-
-The tier separation is unaffected, since those gaps are three to eight times
-larger and sit well above the detection threshold. The paper's conclusion that
-the simplest fusion mechanisms outperform the attention- and transformer-based
-ones holds. LMF and Decision Fusion do not significantly outperform the AST
-unimodal baseline (adjusted *p* = 0.127).
+GMF has the highest mean macro F1, and its 0.011 lead over Late Fusion is close
+to but short of significance (paired *t*(19) = 2.074, *p* = 0.052; Wilcoxon
+*p* = 0.083). That is not evidence the two are equal: the smallest difference
+this design can detect at 80% power is 0.016 macro F1, so a gap of 0.011 falls
+below its resolution. The notebook reports the full sensitivity and equivalence
+analysis, along with every pairwise comparison and each method against the
+unimodal baselines.
 
 ## Repository layout
 
