@@ -308,13 +308,13 @@ for f in sorted(per_p["fold"].unique()):
 #    (TOST) against an explicit bound, not the absence of a significant
 #    difference.
 #
-# > **On observed power.** Power computed *at the observed effect size* is
-# > reported below for completeness, but it should not be used to interpret the
-# > non-significant result. Observed power is a one-to-one function of the
-# > p-value, so it carries no information beyond it, and arguing that a null
-# > result is explained by low observed power is circular (Hoenig & Heisey,
-# > 2001, *The Abuse of Power*). The minimum detectable effect is the
-# > appropriate statistic and is what the write-up should quote.
+# > **Why observed power is not reported here.** A natural thing to compute is
+# > the power to detect the effect we actually measured. We deliberately do not
+# > report it. Observed power is a one-to-one function of the p-value, so it
+# > carries no information beyond it, and arguing that a null result is
+# > explained by low observed power is circular (Hoenig & Heisey, 2001, *The
+# > Abuse of Power*). The minimum detectable effect below answers the same
+# > question without that objection, and is the statistic to quote.
 
 # %%
 def paired_power(effect_dz, n, alpha=ALPHA):
@@ -368,10 +368,6 @@ for target in POWER_TARGETS:
     n_req = next(k for k in range(5, 1000) if paired_power(dz_obs, k) >= target)
     print(f"  participants needed for {target:.0%} power if true d_z = {dz_obs:.3f}   {n_req}")
 
-print("\nOBSERVED POWER — reported for completeness, DO NOT use to interpret the null")
-print(f"  power at the observed effect, n={n_obs}                {paired_power(dz_obs, n_obs):.1%}")
-print("  (a 1:1 function of the p-value; see Hoenig & Heisey 2001. Quote the")
-print("   minimum detectable effect above instead.)")
 
 print("\nEQUIVALENCE (TOST)")
 for bound in EQUIV_BOUNDS:
@@ -390,7 +386,6 @@ print(f"  one-sided Wilcoxon        W = {os_w.statistic:.1f}, p = {os_w.pvalue:.
 power_rows = [{
     "observed_dz": dz_obs,
     "observed_diff": primary["mean_diff"],
-    "power_at_n": paired_power(dz_obs, n_obs),
     "mde_dz_80pct": mde_dz,
     "mde_f1_80pct": mde_dz * sd_obs,
     **{f"n_for_{int(t*100)}pct_power":
