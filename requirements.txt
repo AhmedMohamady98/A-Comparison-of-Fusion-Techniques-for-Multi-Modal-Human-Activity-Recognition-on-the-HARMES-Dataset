@@ -4,6 +4,5 @@ transformers        # AST backbone via HuggingFace
 numpy
 pandas
 scikit-learn
-scipy               # paired significance tests (notebooks/20_significance_tests.py)
 matplotlib
 seaborn
