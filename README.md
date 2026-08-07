@@ -42,13 +42,25 @@ comparisons are (smallest adjusted *p* = 0.413).
 | 2 | CMA, CLS Transformer, MBT |
 | 3 | LMF, Decision Fusion |
 
-GMF's 0.010 lead over Late Fusion is **not** statistically significant (paired
+GMF's 0.011 lead over Late Fusion is **not** statistically significant (paired
 *t*(19) = 2.074, *p* = 0.052; Wilcoxon *W* = 58, *p* = 0.083; 95% CI
-[−0.000, +0.022]), so the two should be read as tied. The separation between
-tiers is robust, so the paper's conclusion that the simplest fusion mechanisms
-outperform the attention- and transformer-based ones holds. LMF and Decision
-Fusion do not significantly outperform the AST unimodal baseline (adjusted
-*p* = 0.127).
+[−0.000, +0.022]).
+
+That should not be read as evidence the two methods are equal. With 20
+participants the smallest difference detectable at 80% power is 0.016 macro F1,
+which is larger than the 0.011 gap actually observed, and power to detect an
+effect of the observed size is only 50.4%. Equivalence testing (TOST) puts the
+same point the other way: the two are equivalent within ±0.03 macro F1
+(*p* = 0.001) but equivalence cannot be claimed within ±0.01 (*p* = 0.586).
+The difference between GMF and late concatenation therefore falls **below the
+resolution of a 20-participant design**; separating them would need roughly 39
+participants.
+
+The tier separation is unaffected, since those gaps are three to eight times
+larger and sit well above the detection threshold. The paper's conclusion that
+the simplest fusion mechanisms outperform the attention- and transformer-based
+ones holds. LMF and Decision Fusion do not significantly outperform the AST
+unimodal baseline (adjusted *p* = 0.127).
 
 ## Repository layout
 

@@ -74,6 +74,11 @@ ALPHA     = 0.05          # significance threshold
 N_BOOT    = 10_000        # bootstrap resamples for the CI on the mean difference
 BOOT_SEED = 20260805      # fixed so the reported CI is reproducible
 
+# Equivalence bounds for the TOST in section 3.1, in macro F1 points. A bound is
+# the largest difference you would still call "practically the same".
+EQUIV_BOUNDS  = (0.010, 0.020, 0.030, 0.050)
+POWER_TARGETS = (0.80, 0.90)   # power levels to report required sample sizes for
+
 # ── Output ───────────────────────────────────────────────────────────────────
 SAVE_FORMATS = ("svg", "pdf")   # add "png" for a quick raster preview
 SAVE_CLOSE   = False            # False keeps figures visible inline in the notebook
@@ -288,6 +293,92 @@ for f in sorted(per_p["fold"].unique()):
           f"GMF wins {int((sub['diff'] > 0).sum())}/{len(sub)}")
 
 # %% [markdown]
+# ## 3.1 · Is that result conclusive? Power and equivalence
+#
+# A p-value above the threshold is easy to misread as "the two methods are the
+# same". It is not. Failing to reject the null says nothing on its own about
+# whether an effect exists, so this section asks two further questions.
+#
+# 1. **Could this design have detected an effect of the observed size?** If the
+#    study is underpowered, a non-significant result is uninformative rather
+#    than evidence of equality.
+# 2. **Can equivalence be claimed positively?** That needs a two one-sided test
+#    (TOST) against an explicit bound, not the absence of a significant
+#    difference.
+
+# %%
+def paired_power(effect_dz, n, alpha=ALPHA):
+    """Power of a two-sided paired t-test for a given standardised effect."""
+    df = n - 1
+    crit = stats.t.ppf(1 - alpha / 2, df)
+    ncp = effect_dz * np.sqrt(n)
+    return (1 - stats.nct.cdf(crit, df, ncp)) + stats.nct.cdf(-crit, df, ncp)
+
+
+def tost(d, bound, alpha=ALPHA):
+    """Two one-sided tests for equivalence within +/- bound. Returns p."""
+    n = len(d)
+    se = d.std(ddof=1) / np.sqrt(n)
+    p_lower = 1 - stats.t.cdf((d.mean() + bound) / se, n - 1)
+    p_upper = stats.t.cdf((d.mean() - bound) / se, n - 1)
+    return max(p_lower, p_upper)
+
+
+d_diff = per_p["diff"].to_numpy()
+n_obs = len(d_diff)
+dz_obs = primary["cohen_dz"]
+sd_obs = primary["sd_diff"]
+
+# Smallest standardised effect this n can detect at 80% power.
+mde_dz = next(e for e in np.arange(0.01, 3.0, 0.001)
+              if paired_power(e, n_obs) >= 0.80)
+
+print("POWER")
+print(f"  observed effect                                    d_z = {dz_obs:.3f} "
+      f"({primary['mean_diff']:+.4f} macro F1)")
+print(f"  power to detect it with n={n_obs}                       "
+      f"{paired_power(dz_obs, n_obs):.1%}")
+for target in POWER_TARGETS:
+    n_req = next(k for k in range(5, 1000) if paired_power(dz_obs, k) >= target)
+    print(f"  participants needed for {target:.0%} power at this effect   {n_req}")
+print(f"  smallest effect detectable at 80% power with n={n_obs}  "
+      f"d_z = {mde_dz:.3f}  ({mde_dz * sd_obs:.4f} macro F1)")
+if mde_dz * sd_obs > abs(primary["mean_diff"]):
+    print(f"  -> the observed lead ({abs(primary['mean_diff']):.4f}) is BELOW the "
+          f"detection threshold ({mde_dz * sd_obs:.4f}).")
+    print("     A non-significant result here is inconclusive, not evidence of equality.")
+
+print("\nEQUIVALENCE (TOST)")
+for bound in EQUIV_BOUNDS:
+    p_t = tost(d_diff, bound)
+    print(f"  within +/-{bound:.3f} macro F1   p = {p_t:.4f}   "
+          f"{'equivalent' if p_t < ALPHA else 'cannot claim equivalence'}")
+
+print("\nDIRECTION (reported for completeness; a one-sided test chosen after")
+print("seeing the data is not defensible, so the two-sided result stands)")
+os_t = stats.ttest_rel(per_p["GMF"], per_p["Late Fusion"], alternative="greater")
+os_w = stats.wilcoxon(per_p["GMF"], per_p["Late Fusion"],
+                      alternative="greater", method="exact")
+print(f"  one-sided paired t-test   t = {os_t.statistic:.3f}, p = {os_t.pvalue:.4f}")
+print(f"  one-sided Wilcoxon        W = {os_w.statistic:.1f}, p = {os_w.pvalue:.4f}")
+
+power_rows = [{
+    "observed_dz": dz_obs,
+    "observed_diff": primary["mean_diff"],
+    "power_at_n": paired_power(dz_obs, n_obs),
+    "mde_dz_80pct": mde_dz,
+    "mde_f1_80pct": mde_dz * sd_obs,
+    **{f"n_for_{int(t*100)}pct_power":
+       next(k for k in range(5, 1000) if paired_power(dz_obs, k) >= t)
+       for t in POWER_TARGETS},
+    **{f"tost_p_{b:.3f}": tost(d_diff, b) for b in EQUIV_BOUNDS},
+    "one_sided_t_p": os_t.pvalue,
+    "one_sided_wilcoxon_p": os_w.pvalue,
+}]
+power_df = pd.DataFrame(power_rows)
+power_df.round(4)
+
+# %% [markdown]
 # ## 4 · GMF against every other fusion method
 
 # %%
@@ -443,4 +534,5 @@ pd.DataFrame([primary]).to_csv(OUT / "primary_test.csv", index=False,
 gmf_df.to_csv(OUT / "gmf_vs_all.csv", index=False, float_format="%.6f")
 ast_df.to_csv(OUT / "fusion_vs_ast.csv", index=False, float_format="%.6f")
 pw_df.to_csv(OUT / "pairwise_all.csv", index=False, float_format="%.6f")
-print(f"Wrote 6 CSVs to {OUT}")
+power_df.to_csv(OUT / "power_and_equivalence.csv", index=False, float_format="%.6f")
+print(f"Wrote 7 CSVs to {OUT}")
