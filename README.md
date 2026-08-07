@@ -3,7 +3,7 @@
 Code and precomputed results to reproduce the experiments and figures from the
 paper. We compare seven multimodal fusion strategies for human activity
 recognition on the [HARMES dataset](https://zenodo.org/records/19425719)
-(wrist IMU + ambient audio + humidity, 20 participants, 16 activity classes
+(dual-wrist IMU + ambient audio + humidity, 20 participants, 16 activity classes
 including a Null class), under a leakage-free, participant-grouped evaluation
 protocol.
 
@@ -20,11 +20,35 @@ protocol.
 | Late Fusion | fusion | 0.817 |
 | CMA | fusion | 0.795 |
 | CLS Transformer | fusion | 0.793 |
-| MBT | fusion | 0.788 |
+| MBT | fusion | 0.787 |
 | LMF | fusion | 0.747 |
 | Decision Fusion | fusion | 0.747 |
 
 GMF under leave-one-participant-out (LOPO): **0.819** macro F1.
+
+### Statistical separability
+
+Because each participant is held out in exactly one fold, every model yields one
+macro F1 per participant on an identical window set, giving 20 paired
+observations per comparison. Testing those pairs
+(`notebooks/20_significance_tests.py`) shows the methods fall into three tiers
+rather than a strict order. All 16 cross-tier comparisons are significant after
+Holm correction (largest adjusted *p* = 0.0013) and none of the 5 within-tier
+comparisons are (smallest adjusted *p* = 0.413).
+
+| Tier | Methods |
+|---|---|
+| 1 | GMF, Late Fusion |
+| 2 | CMA, CLS Transformer, MBT |
+| 3 | LMF, Decision Fusion |
+
+GMF's 0.010 lead over Late Fusion is **not** statistically significant (paired
+*t*(19) = 2.074, *p* = 0.052; Wilcoxon *W* = 58, *p* = 0.083; 95% CI
+[−0.000, +0.022]), so the two should be read as tied. The separation between
+tiers is robust, so the paper's conclusion that the simplest fusion mechanisms
+outperform the attention- and transformer-based ones holds. LMF and Decision
+Fusion do not significantly outperform the AST unimodal baseline (adjusted
+*p* = 0.127).
 
 ## Repository layout
 
@@ -61,10 +85,11 @@ Every figure is generated from the precomputed predictions and metrics in
 notebook from the repository root:
 
 ```bash
-python notebooks/01_unimodal_overview.py     # unimodal baselines + confusion matrices
+python notebooks/01_unimodal_overview.py      # unimodal baselines + confusion matrices
 python notebooks/02_fusion_overview.py        # fusion leaderboard + GMF-vs-AST/TinyHAR diffs
 python notebooks/10_lefthander_analysis.py    # handedness robustness
 python notebooks/11_lopo_analysis.py          # leave-one-participant-out
+python notebooks/20_significance_tests.py     # paired significance tests across participants
 ```
 
 Figures are written to a `figures/<topic>/` folder (created on first run) as
@@ -115,16 +140,20 @@ DOI: [10.5281/zenodo.19425719](https://zenodo.org/records/19425719). License: CC
 
 ## Citation
 
-A preprint will be made available on arXiv; this entry will be updated with the
-arXiv identifier once it is posted.
+The preprint is available on arXiv:
+[arXiv:2606.27886](https://arxiv.org/abs/2606.27886) \[cs.LG\].
 
 ```bibtex
-@misc{mohamady_fusion_harmes,
-  title  = {A Comparison of Fusion Techniques for Multi-Modal Human
-            Activity Recognition on the HARMES Dataset},
-  author = {Mohamady, Ahmed and Burchard, Robin},
-  year   = {2026},
-  note   = {Preprint, arXiv version forthcoming}
+@misc{mohamady_fusion_harmes_2026,
+  title         = {A Comparison of Fusion Techniques for Multi-Modal Human
+                   Activity Recognition on the HARMES Dataset},
+  author        = {Mohamady, Ahmed and Burchard, Robin and Van Laerhoven, Kristof},
+  year          = {2026},
+  eprint        = {2606.27886},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  doi           = {10.48550/arXiv.2606.27886},
+  url           = {https://arxiv.org/abs/2606.27886}
 }
 ```
 
