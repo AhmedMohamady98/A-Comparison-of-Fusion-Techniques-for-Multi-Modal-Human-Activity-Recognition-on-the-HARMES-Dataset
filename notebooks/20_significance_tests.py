@@ -299,12 +299,22 @@ for f in sorted(per_p["fold"].unique()):
 # same". It is not. Failing to reject the null says nothing on its own about
 # whether an effect exists, so this section asks two further questions.
 #
-# 1. **Could this design have detected an effect of the observed size?** If the
-#    study is underpowered, a non-significant result is uninformative rather
-#    than evidence of equality.
+# 1. **What is the smallest difference this design could have detected?** This
+#    is a sensitivity analysis. The minimum detectable effect depends only on
+#    the sample size, the variability and the chosen power, not on the result
+#    we happened to observe, so it is a property of the study rather than a
+#    restatement of the p-value.
 # 2. **Can equivalence be claimed positively?** That needs a two one-sided test
 #    (TOST) against an explicit bound, not the absence of a significant
 #    difference.
+#
+# > **On observed power.** Power computed *at the observed effect size* is
+# > reported below for completeness, but it should not be used to interpret the
+# > non-significant result. Observed power is a one-to-one function of the
+# > p-value, so it carries no information beyond it, and arguing that a null
+# > result is explained by low observed power is circular (Hoenig & Heisey,
+# > 2001, *The Abuse of Power*). The minimum detectable effect is the
+# > appropriate statistic and is what the write-up should quote.
 
 # %%
 def paired_power(effect_dz, n, alpha=ALPHA):
@@ -333,20 +343,35 @@ sd_obs = primary["sd_diff"]
 mde_dz = next(e for e in np.arange(0.01, 3.0, 0.001)
               if paired_power(e, n_obs) >= 0.80)
 
-print("POWER")
+print("SENSITIVITY — what this design could detect  [quote these]")
 print(f"  observed effect                                    d_z = {dz_obs:.3f} "
       f"({primary['mean_diff']:+.4f} macro F1)")
-print(f"  power to detect it with n={n_obs}                       "
-      f"{paired_power(dz_obs, n_obs):.1%}")
-for target in POWER_TARGETS:
-    n_req = next(k for k in range(5, 1000) if paired_power(dz_obs, k) >= target)
-    print(f"  participants needed for {target:.0%} power at this effect   {n_req}")
 print(f"  smallest effect detectable at 80% power with n={n_obs}  "
       f"d_z = {mde_dz:.3f}  ({mde_dz * sd_obs:.4f} macro F1)")
 if mde_dz * sd_obs > abs(primary["mean_diff"]):
     print(f"  -> the observed lead ({abs(primary['mean_diff']):.4f}) is BELOW the "
           f"detection threshold ({mde_dz * sd_obs:.4f}).")
     print("     A non-significant result here is inconclusive, not evidence of equality.")
+
+# The MDE depends on the sd, which is itself estimated from 20 differences.
+# Check the conclusion survives that uncertainty rather than resting on a point
+# estimate.
+sd_lo = sd_obs * np.sqrt((n_obs - 1) / stats.chi2.ppf(0.975, n_obs - 1))
+sd_hi = sd_obs * np.sqrt((n_obs - 1) / stats.chi2.ppf(0.025, n_obs - 1))
+print(f"  95% CI on the sd [{sd_lo:.4f}, {sd_hi:.4f}] -> MDE in "
+      f"[{mde_dz * sd_lo:.4f}, {mde_dz * sd_hi:.4f}]")
+print(f"  -> observed lead stays below the MDE across that whole range: "
+      f"{abs(primary['mean_diff']) < mde_dz * sd_lo}")
+
+print("\nSAMPLE SIZE — conditional on the true effect equalling the observed one")
+for target in POWER_TARGETS:
+    n_req = next(k for k in range(5, 1000) if paired_power(dz_obs, k) >= target)
+    print(f"  participants needed for {target:.0%} power if true d_z = {dz_obs:.3f}   {n_req}")
+
+print("\nOBSERVED POWER — reported for completeness, DO NOT use to interpret the null")
+print(f"  power at the observed effect, n={n_obs}                {paired_power(dz_obs, n_obs):.1%}")
+print("  (a 1:1 function of the p-value; see Hoenig & Heisey 2001. Quote the")
+print("   minimum detectable effect above instead.)")
 
 print("\nEQUIVALENCE (TOST)")
 for bound in EQUIV_BOUNDS:

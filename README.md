@@ -46,15 +46,16 @@ GMF's 0.011 lead over Late Fusion is **not** statistically significant (paired
 *t*(19) = 2.074, *p* = 0.052; Wilcoxon *W* = 58, *p* = 0.083; 95% CI
 [−0.000, +0.022]).
 
-That should not be read as evidence the two methods are equal. With 20
-participants the smallest difference detectable at 80% power is 0.016 macro F1,
-which is larger than the 0.011 gap actually observed, and power to detect an
-effect of the observed size is only 50.4%. Equivalence testing (TOST) puts the
-same point the other way: the two are equivalent within ±0.03 macro F1
-(*p* = 0.001) but equivalence cannot be claimed within ±0.01 (*p* = 0.586).
-The difference between GMF and late concatenation therefore falls **below the
-resolution of a 20-participant design**; separating them would need roughly 39
-participants.
+That should not be read as evidence the two methods are equal. A sensitivity
+analysis shows the smallest difference this design can detect at 80% power is
+0.016 macro F1, which is larger than the 0.011 gap actually observed, and that
+conclusion holds across the 95% confidence interval of the difference standard
+deviation. Equivalence testing (TOST) puts the same point the other way: the two
+are equivalent within ±0.03 macro F1 (*p* = 0.001) but equivalence cannot be
+claimed within ±0.01 (*p* = 0.586). The difference between GMF and late
+concatenation therefore falls **below the resolution of a 20-participant
+design**; separating them would need roughly 39 participants if the true
+difference is the size measured here.
 
 The tier separation is unaffected, since those gaps are three to eight times
 larger and sit well above the detection threshold. The paper's conclusion that
